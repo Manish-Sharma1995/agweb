@@ -13,9 +13,9 @@ use Drupal\views\Views;
  * Provides a custom configuration block.
  *
  * @Block(
- *   id = "agweb_block",
- *   admin_label = @Translation("Agweb block"),
- *   category = @Translation("Agweb block"),
+ *   id = "agweb_layout_block",
+ *   admin_label = @Translation("Agweb Layout Block"),
+ *   category = @Translation("Agweb Layout Block"),
  * )
  */
 
@@ -27,15 +27,13 @@ class AgwebBlock extends BlockBase implements BlockPluginInterface {
   public function build() {
     $config = $this->getConfiguration();
 
-    $input1 = $config['select_brand'];
-    $input2 = $config['select_keyword'];
+    $tid1 = $config['select_brand'];
+    $tid2 = $config['select_keyword'];
 
+    $args = [$tid1,$tid2];
     $view = Views::getView('search_articles');
     if (is_object($view)) {
-      $view->setExposedInput([
-        'field_brand_target_id' => $input1,
-        'field_keyword_target_id' => $input2,
-      ]);
+      $view->setArguments($args);
       $view->setDisplay('page_1');
       $view->preExecute();
       $view->execute();
@@ -94,16 +92,6 @@ class AgwebBlock extends BlockBase implements BlockPluginInterface {
   public function blockSubmit($form, FormStateInterface $form_state) {
     parent::blockSubmit($form, $form_state);
     $values = $form_state->getValues();
-
-    $tid1 = $values['select_brand'];
-    $tid2 = $values['select_keyword'];
-    $term1 = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($tid1);
-    $name1 = $term1->getName();
-    $term2 = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->load($tid2);
-    $name2 = $term2->getName();    
-
-    $values['select_brand'] = $name1;
-    $values['select_keyword'] = $name2;
 
     $this->configuration['select_brand'] = $values['select_brand'];
     $this->configuration['select_keyword'] = $values['select_keyword'];
