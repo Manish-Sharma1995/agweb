@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Contains agweb.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * Implements hook_help().
+ */
+function agweb_layout_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the agweb module.
+    case 'help.page.agweb_layout':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Custom block configurations for agweb.') . '</p>';
+      return $output;
+
+    default:
+  }
+}

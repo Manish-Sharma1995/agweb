@@ -1,0 +1,5 @@
+name: 'agweb_layout'
+type: module
+description: 'Custom block configurations for agweb.'
+core: 8.x
+package: 'Custom'
