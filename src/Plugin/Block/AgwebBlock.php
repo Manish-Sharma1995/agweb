@@ -7,6 +7,8 @@ use Drupal\Core\Block\BlockPluginInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\taxonomy\Entity\Term;
 use Drupal\views\Views;
+use Drupal\Core\Cache;
+use Drupal\Core\Cache\CacheBackendInterface;
 
 
 /**
@@ -28,16 +30,18 @@ class AgwebBlock extends BlockBase implements BlockPluginInterface {
     $config = $this->getConfiguration();
 
     $tid1 = $config['select_brand'];
+    $arg1 = implode('+', $tid1);
     $tid2 = $config['select_keyword'];
-
-    $args = [$tid1,$tid2];
+    $arg2 = implode('+', $tid2);
+    $args = [$arg1,$arg2];
     $view = Views::getView('search_articles');
+      
     if (is_object($view)) {
       $view->setArguments($args);
       $view->setDisplay('page_1');
       $view->preExecute();
       $view->execute();
-      $content = $view->buildRenderable();
+      $content = $view->render();
       $output[] = $content;
     }
 
@@ -70,14 +74,14 @@ class AgwebBlock extends BlockBase implements BlockPluginInterface {
     }     
 
     $form['select_brand'] = [
-      '#type' => 'select',
+      '#type' => 'checkboxes',
       '#title' => t('Select Brand'),
       '#options' => $term_list1,
       '#default_value' => isset($config['select_brand']) ? $config['select_brand'] : '',	
     ];
 
     $form['select_keyword'] = [
-      '#type' => 'select',
+      '#type' => 'checkboxes',
       '#title' => t('Select Keyword'),
       '#options' => $term_list2,	
       '#default_value' => isset($config['select_keyword']) ? $config['select_keyword'] : '',
